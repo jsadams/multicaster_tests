@@ -1,11 +1,25 @@
-use std::net::{UdpSocket, SocketAddr, Ipv4Addr};
+mod elapsed_time_tracker;
+
+use std::net::{UdpSocket, SocketAddr};
 use std::thread;
-use std::time::{Duration, SystemTime};
+use std::time::{Duration};
+//use std::time::{Instant};
+
+
+
 
 const MULTICAST_ADDR: &'static str = "224.0.0.50:55583";
 const INTERVAL_SECONDS: u64 = 1;
 
+
+
+
+
+
 fn main() {
+
+    let mut timer = elapsed_time_tracker::ElapsedTimeTracker::new();
+
     // Parse multicast address
     let multicast_addr: SocketAddr = MULTICAST_ADDR.parse().expect("Invalid multicast address");
 
@@ -26,5 +40,14 @@ fn main() {
         counter += 1;
 
         thread::sleep(Duration::from_secs(INTERVAL_SECONDS));
+
+        // Get elapsed time since last call
+        let elapsed = timer.get_elapsed();
+
+        if let Some(time) = elapsed {
+            println!("Elapsed time: {:?}", time);
+        } else {
+            println!("No previous time recorded.");
+        }
     }
 }
