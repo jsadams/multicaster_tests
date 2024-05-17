@@ -1,6 +1,8 @@
 
 
-use std::net::{UdpSocket, SocketAddr, IpAddr, SocketAddrV4, Ipv4Addr};
+//use std::net::{UdpSocket, SocketAddr, IpAddr, SocketAddrV4, Ipv4Addr};
+use std::net::{UdpSocket, SocketAddr, IpAddr};
+
 use std::time::Duration;
 
 const MULTICAST_ADDR: &'static str = "224.0.0.50:55583";
@@ -15,32 +17,36 @@ fn main() {
     // Create a UDP socket
     let socket = UdpSocket::bind(bind_addr).expect("Failed to bind socket");
 
-    // Join the multicast group
-    let multicast_ip :IpAddr = multicast_addr.ip();
+    // Parse multicast address
+    let multicast_addr: SocketAddr = MULTICAST_ADDR.parse().expect("Invalid multicast address");
+    let bind_addr: SocketAddr=BIND_ADDR.parse().expect("Invalid bind addr");
+
+    // Create a UDP socket
+    //let socket = UdpSocket::bind("0.0.0.0:0").expect("Failed to bind socket");
 
     // Join the multicast group
-    let multicast_ip = multicast_addr.ip();
-    let bind_ip = bind_addr.ip();
+    //let multicast_ip:IpAddr = multicast_addr.ip();
+    //let bind_ip :IpAddr = bind_addr.ip();
     // if let (IpAddr::V4(multicast_ip), IpAddr::V4(bind_ip)) = (multicast_ip, bind_ip) {
     //     socket.join_multicast_v4(&multicast_ip, &bind_ip).expect("Failed to join multicast group");
     // } else {
     //     panic!("Multicast address or bind address is not IPv4");
     // }
 
-    // Join the multicast group
-    let multicast_ip = if let IpAddr::V4(ipv4) = multicast_addr.ip() {
-        ipv4
-    } else {
-        panic!("Multicast address is not IPv4");
-    };
+    // // Join the multicast group
+    // let multicast_ip = if let IpAddr::V4(ipv4) = multicast_addr.ip() {
+    //     ipv4
+    // } else {
+    //     panic!("Multicast address is not IPv4");
+    // };
+    //
+    // let bind_ip = if let IpAddr::V4(ipv4) = bind_addr.ip() {
+    //     ipv4
+    // } else {
+    //     panic!("Bind address is not IPv4");
+    // };
 
-    let bind_ip = if let IpAddr::V4(ipv4) = bind_addr.ip() {
-        ipv4
-    } else {
-        panic!("Bind address is not IPv4");
-    };
-
-    socket.join_multicast_v4(&multicast_ip, &bind_ip).expect("Failed to join multicast group");
+    socket.join_multicast_v4(&multicast_addr, &bind_addr).expect("Failed to join multicast group");
 
 
     //let multicast_ip: IpvAddr::V4 = multicast_addr.ip().to_ipv4().expect("Multicast address is not IPv4");
